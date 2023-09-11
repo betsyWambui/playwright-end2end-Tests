@@ -15,5 +15,5 @@ test("verify use can add a new job", async({page}) => {
     const client = new ClientPage(page)
     await client.clientLogin()
     await client.createJob()
-  
+    await expect(page.getByText('test job 1')).toBeVisible()
 })

@@ -16,11 +16,17 @@ export class ClientPage{
      this.selectPythonField = page.getByText('Python', {exact: true })
      this.selectJavaField = page.getByText('Java', {exact: true})
      this.checkFirstRoleField = page.locator('label').filter({ hasText: 'Full-Stack Developer' })
-     this.budgetSliderField = page.locator('span').filter({ hasText: /^<1$/ }).first()
-     this.selectContinentDropdownField = page.locator('div').getByRole('alert', {name: "Continents"})
-     
+     this.senioritySliderTrackField = page.locator('.MuiSlider-root:nth-child(2) > span:nth-child(2)').first()
+     this.senioritySliderThumbField = page.locator('span.MuiSlider-thumb:nth-child(16)')
+     this.budgetSliderThumbField = page.locator('span.MuiSlider-thumb:nth-child(7)')
+     this.budgetSliderTrackField = page.locator('.MuiSlider-root:nth-child(2) > span:nth-child(2)').last()
+     this.selectCountriesDropdownField = page.locator('div:nth-child(2) > div.ui').last()
+     this.selectContinentDropdownField = page.locator('div:nth-child(1) > div.ui').last()
+     this.selectOptionField = page.getByRole('option')
+     this.continentDropdownIconField = page.locator('i.dropdown').first()
+     this.countriesDropdownIconField = page.locator('i.dropdown').last()
+     this.saveJobField = page.getByRole('button', {name: 'Save job'})
    }
-
    async gotoRemoteMoreWebsite(){
        await this.page.goto('https://rm-marketplace-staging.web.app/')
    }
@@ -30,6 +36,41 @@ export class ClientPage{
      await this.emailInputField.fill("beth@remotemore.com")
      await this.passwordInputField.fill("Borisov1")
      await this.loginbuttonField.click()
+   }
+
+   async selectFirstThreeItemDropdown(selectdropdownField, selectOptionsField){
+     selectdropdownField;
+     await selectdropdownField.click()
+     const allOptions = await selectOptionsField.all()
+     const selectedOptions = allOptions.slice(0, 3)
+     
+      for ( const option of selectedOptions ){
+        await option.click()
+      }
+
+   }
+   async changeSliderValue(sliderTrackElement, sliderThumbElement){
+    sliderThumbElement;
+    sliderTrackElement;
+    const targetPercentage = 10
+    const thumbBoundingBox = await sliderThumbElement.boundingBox()
+    const sliderBoundingBox = await sliderTrackElement.boundingBox()
+    const startPoint =
+    {
+        x: thumbBoundingBox.x + thumbBoundingBox.width * targetPercentage,
+        y: thumbBoundingBox.y + thumbBoundingBox.height / 2
+    }
+
+    const endpoint = {
+      x: sliderBoundingBox.x + sliderBoundingBox.width / 2 ,
+      y: sliderBoundingBox.y + sliderBoundingBox.height / 2 
+
+    }
+
+    await this.page.mouse.move(startPoint.x, startPoint.y);
+    await this.page.mouse.down()
+    await this.page.mouse.move(endpoint.x, endpoint.y)  
+    await this.page.mouse.up()
    }
    
    async createJob(){
@@ -43,12 +84,12 @@ export class ClientPage{
        await this.skillInputField.fill("Java")
        await this.selectJavaField.click()
        await this.checkFirstRoleField.check()
-       await this.page.mouse.move(50, 100)
-      //  await this.seniorityDragBarField.click({ position: { x: 3, y:1} })
-      //  await this.selectContinentDropdownField.click()
-     
+       await this.selectFirstThreeItemDropdown(this.selectContinentDropdownField, this.selectOptionField)
+       await this.continentDropdownIconField.click()
+       await this.selectFirstThreeItemDropdown(this.selectCountriesDropdownField, this.selectOptionField)
+       await this.countriesDropdownIconField.click()
+       await this.changeSliderValue(this.senioritySliderTrackField, this.senioritySliderThumbField)      
+      await this.changeSliderValue(this.budgetSliderTrackField, this.budgetSliderThumbField)
+      await this.saveJobField.click() 
    }
-
-
 }
-
