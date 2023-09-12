@@ -1,8 +1,14 @@
 
+import dotenv from 'dotenv';
+
+dotenv.config({path: '../.env'});
 export class ClientPage{
     /**
  * @param {import('@playwright/test').Page} page
+
+
  */
+ 
    constructor(page){
      this.page = page 
      this.emailInputField = page.getByPlaceholder("Email")
@@ -28,19 +34,35 @@ export class ClientPage{
      this.saveJobField = page.getByRole('button', {name: 'Save job'})
    }
    async gotoRemoteMoreWebsite(){
-       await this.page.goto('https://rm-marketplace-staging.web.app/')
+     await this.page.goto(process.env.STAGING_URL)
    }
 
    async clientLogin(){
      await this.gotoRemoteMoreWebsite()
-     await this.emailInputField.fill("beth@remotemore.com")
-     await this.passwordInputField.fill("Borisov1")
+     await this.emailInputField.fill(process.env.EMAIL)
+     await this.passwordInputField.fill(process.env.PASSWORD)
      await this.loginbuttonField.click()
    }
 
-   async selectFirstThreeItemDropdown(selectdropdownField, selectOptionsField){
-     selectdropdownField;
-     await selectdropdownField.click()
+   async addJobTitle(){
+    await this.addJobLinkText.click()
+    await this.addJobtitleField.fill("test job 1")
+    await this.jobdescriptionField.fill("test description 1")
+   }
+   async addSkills(){
+    await this.skillInputField.fill("React")
+    await this.selectReactField.click()
+    await this.skillInputField.fill("Python")
+    await this.selectPythonField.click()
+    await this.skillInputField.fill("Java")
+    await this.selectJavaField.click()
+   }
+   async selectRole(){
+    await this.checkFirstRoleField.check()
+   }
+
+   async selectFirstThreeItemDropdown(selectDropdownField, selectOptionsField){
+     await selectDropdownField.click()
      const allOptions = await selectOptionsField.all()
      const selectedOptions = allOptions.slice(0, 3)
      
@@ -60,36 +82,31 @@ export class ClientPage{
         x: thumbBoundingBox.x + thumbBoundingBox.width * targetPercentage,
         y: thumbBoundingBox.y + thumbBoundingBox.height / 2
     }
-
-    const endpoint = {
+    const endpoint = 
+    {
       x: sliderBoundingBox.x + sliderBoundingBox.width / 2 ,
       y: sliderBoundingBox.y + sliderBoundingBox.height / 2 
-
     }
-
     await this.page.mouse.move(startPoint.x, startPoint.y);
     await this.page.mouse.down()
     await this.page.mouse.move(endpoint.x, endpoint.y)  
     await this.page.mouse.up()
    }
-   
+  
+  async clickSave(){
+    await this.saveJobField.click() 
+  }
+  
    async createJob(){
-       await this.addJobLinkText.click()
-       await this.addJobtitleField.fill("test job 1")
-       await this.jobdescriptionField.fill("test description 1")
-       await this.skillInputField.fill("React")
-       await this.selectReactField.click()
-       await this.skillInputField.fill("Python")
-       await this.selectPythonField.click()
-       await this.skillInputField.fill("Java")
-       await this.selectJavaField.click()
-       await this.checkFirstRoleField.check()
+       await this.addJobTitle()
+       await this.addSkills()
+       await this.selectRole()
        await this.selectFirstThreeItemDropdown(this.selectContinentDropdownField, this.selectOptionField)
        await this.continentDropdownIconField.click()
        await this.selectFirstThreeItemDropdown(this.selectCountriesDropdownField, this.selectOptionField)
        await this.countriesDropdownIconField.click()
        await this.changeSliderValue(this.senioritySliderTrackField, this.senioritySliderThumbField)      
-      await this.changeSliderValue(this.budgetSliderTrackField, this.budgetSliderThumbField)
-      await this.saveJobField.click() 
+       await this.changeSliderValue(this.budgetSliderTrackField, this.budgetSliderThumbField)
+       await this.clickSave()
    }
 }
