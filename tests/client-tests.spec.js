@@ -1,13 +1,16 @@
 // @ts-check
 
 const { test, expect, } = require('@playwright/test');
+import dotenv from 'dotenv';
 const   {  ClientPage }  = require ("../pages/client-page")
 
 
+dotenv.config({path: '../.env'});
 test("verify user can login", async ({page}) => {
     const client = new ClientPage(page)
     await client.clientLogin()
-    await expect(page).toHaveURL('https://rm-marketplace-staging.web.app/jobs')
+    // @ts-ignore
+    await expect(page).toHaveURL(process.env.JOBS_DASHBOARD_URL)
 
 });
 
