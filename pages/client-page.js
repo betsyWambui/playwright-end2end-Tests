@@ -17,12 +17,13 @@ export class ClientPage{
     this.jobDashboardField = page.getByText('Jobs Dashboard', { exact: true })
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
-    this.jobdescriptionField = page.getByPlaceholder('description')
+    this.jobdescriptionField = page.getByPlaceholder('Job description')
     this.skillInputField = page.getByPlaceholder('Type in required skills')
     this.selectReactField = page.getByText('React', { exact: true })
     this.selectPythonField = page.getByText('Python', {exact: true })
     this.selectJavaField = page.getByText('Java', {exact: true})
-    this.checkFirstRoleField = page.locator('label').filter({ hasText: 'Full-Stack Developer' })
+    this.checkFirstRoleField = page.getByLabel('Full-Stack Developer')
+    this.checkSecondRoleField =  page.getByLabel('Front-End Developer')
     this.senioritySliderTrackField = page.locator('.MuiSlider-root:nth-child(2) > span:nth-child(2)').first()
     this.senioritySliderThumbField = page.locator('span.MuiSlider-thumb:nth-child(16)')
     this.budgetSliderThumbField = page.locator('span.MuiSlider-thumb:nth-child(7)')
@@ -37,8 +38,12 @@ export class ClientPage{
     this.jobMenubutton = page.locator('#long-button').first()
     this.deleteJobOptionField = page.getByText('Delete job').first()
     this.renameJobOptionField = page.getByText('Rename job').first()
+    this.editbuttonField = page.getByRole('button', { name: 'Edit job' })
     this.deletebuttonField = page.getByRole('button', { name: 'Delete' })
     this.noJobTextField = page.getByText('No Jobs available')
+    this.roleFieldonJobDetails = page.locator('div:nth-child(1) > div:nth-child(5) > div:nth-child(2) div:nth-child(2)').last()
+    this.edittedContinentsField = page.locator('div:nth-child(1) > div:nth-child(5) > div:nth-child(5) div:nth-child(2)')
+    this.editContinentField = page.locator('.ui:nth-child(3) .delete').first()
    }
    async gotoRemoteMoreWebsite(){
      await this.page.goto(process.env.STAGING_URL)
@@ -52,10 +57,11 @@ export class ClientPage{
      
    }
 
-   async addJobTitleAndDescription(titleName){
+   async addJobTitleAndDescription(titleName, description){
     await this.addJobLinkText.first().click()
     await this.addJobtitleField.fill(titleName)
-    await this.jobdescriptionField.fill("test description 1")
+    await this.jobdescriptionField.fill(description)
+
    }
    async addSkills(){
     await this.skillInputField.fill("React")
@@ -65,8 +71,8 @@ export class ClientPage{
     await this.skillInputField.fill("Java")
     await this.selectJavaField.click()
    }
-   async selectRole(){
-    await this.checkFirstRoleField.check()
+   async selectRole(checkRadioField){
+    await checkRadioField.check()
    }
 
    async selectFirstThreeItemDropdown(selectDropdownField, selectOptionsField){
@@ -79,8 +85,6 @@ export class ClientPage{
 
    }
    async changeSliderValue(sliderTrackElement, sliderThumbElement){
-    sliderThumbElement;
-    sliderTrackElement;
     const targetPercentage = 10
     const thumbBoundingBox = await sliderThumbElement.boundingBox()
     const sliderBoundingBox = await sliderTrackElement.boundingBox()
@@ -105,10 +109,10 @@ export class ClientPage{
   }
  
   
-  async createJob(titleName){
-      await this.addJobTitleAndDescription(titleName)
+  async createJob(titleName, description){
+      await this.addJobTitleAndDescription(titleName, description)
       await this.addSkills()
-      await this.selectRole()
+      await this.selectRole(this.checkFirstRoleField)
       await this.selectFirstThreeItemDropdown(this.selectContinentDropdownField, this.selectOptionField)
       await this.continentDropdownIconField.click()
       await this.selectFirstThreeItemDropdown(this.selectCountriesDropdownField, this.selectOptionField)
@@ -116,17 +120,19 @@ export class ClientPage{
       await this.changeSliderValue(this.senioritySliderTrackField, this.senioritySliderThumbField)      
       await this.changeSliderValue(this.budgetSliderTrackField, this.budgetSliderThumbField)
       await this.clickSave()
-      return titleName
+      return { titleName, description }
   }
   async selectFirstJobVisible() {
     await this.firstJobElement.click()
+    const selectedJob = await this.firstJobElement.innerText()
+    return selectedJob
   }
   async selectCreatedJob(jobTitle) {
     this.page.getByText(jobTitle).click()
   }
 
 
-  async renameJob(titleName) {
+  async renameJobTitle(titleName) {
     await this.jobMenubutton.hover()
     await this.jobMenubutton.click()
     await this.renameJobOptionField.click()
@@ -135,6 +141,23 @@ export class ClientPage{
     return titleName
   }
 
+ async editItemsOnJob(description){
+   await this.editbuttonField.click()
+   await this.page.setDefaultTimeout(50000)
+   await this.selectRole(this.checkSecondRoleField)
+   await this.jobdescriptionField.fill(description)
+   await this.editContinentField.click()
+   await this.clickSave()
+   return description
+
+
+ } 
+   async deleteIncompleteJobCreate(titleName, description){
+       await this.addJobTitleAndDescription(titleName, description)
+       await this.selectRole(this.checkFirstRoleField)
+       await this.deletebuttonField.click()
+       await this.deletebuttonField.click()
+   }
    async deleteJob(){
       await this.jobMenubutton.hover()
       await this.jobMenubutton.click()
