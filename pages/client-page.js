@@ -20,6 +20,7 @@ export class ClientPage{
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
+    this.jobdescriptionField = page.getByPlaceholder('Job description')
     this.skillInputField = page.getByPlaceholder('Type in required skills')
     this.selectReactField = page.getByText('React', { exact: true })
     this.selectPythonField = page.getByText('Python', {exact: true })
@@ -138,9 +139,6 @@ export class ClientPage{
     this.page.getByText(jobTitle).click()
   }
 
-  async waitForJobsToLoad() {
-
-  }
   async renameJobTitle(titleName) {
     await this.jobMenubutton.hover()
     await this.jobMenubutton.click()
