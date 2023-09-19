@@ -1,9 +1,9 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
 import dotenv from 'dotenv';
+import path from 'path'
 
-
-dotenv.config({path: '../.env'});
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
