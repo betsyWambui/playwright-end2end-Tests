@@ -38,6 +38,7 @@ test("verify client can rename a job title", async({page}) => {
     const description = faker.lorem.text()
     await client.clientLogin()
     await expect(client.jobDashboardField).toBeVisible()
+    await client.debounceDom(50, 350)
     if(await client.firstJobElement.isVisible()){
         await client.selectFirstJobVisible()
         const newJobTitle = await client.renameJobTitle(titleName)
@@ -63,7 +64,7 @@ test('Verify client can edit some items on the edit screen', async({page}) => {
     const client = new ClientPage(page)   
     description = faker.lorem.text() 
     await client.clientLogin()
-    await page.waitForLoadState('load')
+    await client.debounceDom(50, 350)
     if(await client.firstJobElement.isVisible()){   
         await client.selectFirstJobVisible()
          const editeddescription = await client.editItemsOnJob(description)
@@ -90,9 +91,9 @@ test('Verify client can edit some items on the edit screen', async({page}) => {
 test('Verify client can delete job ', async({page }) => {
     const client = new ClientPage(page)
     await client.clientLogin()
-    await page.waitForLoadState('load')
     await expect(client.jobDashboardField).toBeVisible()
-    if(await client.firstJobElement.isVisible({timeout: 40000})){
+    await client.debounceDom(50, 350)
+    if(await client.firstJobElement.isVisible()){
         const selectedJob = await client.selectFirstJobVisible()
         await client.deleteJob()
         await expect(page.getByText(selectedJob)).not.toBeVisible()
@@ -102,7 +103,7 @@ test('Verify client can delete job ', async({page }) => {
         const titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
         const createdJob = await client.createJob(titleName, description)
-        await client.selectCreatedJob(createdJob)
+        await client.selectCreatedJob(createdJob.titleName)
         await client.deleteJob()
         await expect(page.getByText(createdJob.titleName)).not.toBeVisible()
         await expect(client.noJobTextField).toBeVisible()

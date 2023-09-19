@@ -59,14 +59,27 @@ export class ClientPage{
      await this.passwordInputField.fill(process.env.PASSWORD)
      await this.loginbuttonField.click()
      await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-     await this.jobDashboardField.isVisible()
      await this.searchDevelopersField.isVisible()
-     await this.hiredDevelopersField.isVisible()
+     await this.jobDashboardField.isVisible()
 
    }
+   async debounceDom(pollDelay = 50, stableDelay = 350) {
+    let markupPrevious = '';
+    const timerStart = new Date();
+    let isStable = false;
+    while (!isStable) {
+        const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
+        if (markupCurrent == markupPrevious) {
+            const elapsed = new Date().getTime() - timerStart.getTime();
+            isStable = stableDelay <= elapsed;
+        } else {
+            markupPrevious = markupCurrent;
+        }
+        if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
+    }
+}
 
    async addJobTitleAndDescription(titleName, description){
-    await this.addJobLinkText.first().click()
     await this.addJobtitleField.fill(titleName)
     await this.jobdescriptionField.fill(description)
 
@@ -118,6 +131,7 @@ export class ClientPage{
  
   
   async createJob(titleName, description){
+      await this.addJobLinkText.first().click()
       await this.addJobTitleAndDescription(titleName, description)
       await this.addSkills()
       await this.selectRole(this.checkFirstRoleField)
@@ -131,6 +145,7 @@ export class ClientPage{
       return { titleName, description }
   }
   async selectFirstJobVisible() {
+
     await this.firstJobElement.click()
     const selectedJob = await this.firstJobElement.innerText()
     return selectedJob
@@ -147,6 +162,7 @@ export class ClientPage{
     await this.addJobtitleField.fill(titleName)
     return titleName
   }
+  
 
  async editItemsOnJob(description){
    await this.editbuttonField.click()
@@ -160,6 +176,7 @@ export class ClientPage{
 
  } 
    async deleteIncompleteJobCreate(titleName, description){
+       await this.addJobLinkText.first().click()
        await this.addJobTitleAndDescription(titleName, description)
        await this.selectRole(this.checkFirstRoleField)
        await this.deletebuttonField.click()
