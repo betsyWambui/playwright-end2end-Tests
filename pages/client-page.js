@@ -15,6 +15,8 @@ export class ClientPage{
     this.passwordInputField = page.getByPlaceholder("Password")
     this.loginbuttonField = page.getByRole('button', {name: "Sign in"})
     this.jobDashboardField = page.getByText('Jobs Dashboard', { exact: true })
+    this.searchDevelopersField = page.getByRole('navigation').getByRole('link', { name: 'Search Developers' })
+    this.hiredDevelopersField = page.getByText('Hired Developer')
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
@@ -35,6 +37,7 @@ export class ClientPage{
     this.countriesDropdownIconField = page.locator('i.dropdown').last()
     this.saveJobField = page.getByRole('button', {name: 'Save job'})
     this.firstJobElement = page.locator('div.job-name-container').first()
+    this.createdTextField = page.locator("div").filter({hasText: 'Created'})
     this.jobMenubutton = page.locator('#long-button').first()
     this.deleteJobOptionField = page.getByText('Delete job').first()
     this.renameJobOptionField = page.getByText('Rename job').first()
@@ -54,7 +57,11 @@ export class ClientPage{
      await this.emailInputField.fill(process.env.EMAIL)
      await this.passwordInputField.fill(process.env.PASSWORD)
      await this.loginbuttonField.click()
-     
+     await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
+     await this.jobDashboardField.isVisible()
+     await this.searchDevelopersField.isVisible()
+     await this.hiredDevelopersField.isVisible()
+
    }
 
    async addJobTitleAndDescription(titleName, description){
@@ -131,7 +138,9 @@ export class ClientPage{
     this.page.getByText(jobTitle).click()
   }
 
+  async waitForJobsToLoad() {
 
+  }
   async renameJobTitle(titleName) {
     await this.jobMenubutton.hover()
     await this.jobMenubutton.click()

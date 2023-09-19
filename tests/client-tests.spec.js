@@ -8,7 +8,7 @@ const   {  ClientPage }  = require ("../pages/client-page")
 test("verify user can login", async ({page}) => {
     const client = new ClientPage(page)
     await client.clientLogin()
-    await expect(page).toHaveURL('https://rm-marketplace-staging.web.app/jobs')
+    await expect(client.jobDashboardField).toBeVisible()
 
 });
 
@@ -63,9 +63,8 @@ test('Verify client can edit some items on the edit screen', async({page}) => {
     const client = new ClientPage(page)   
     description = faker.lorem.text() 
     await client.clientLogin()
-    await expect(client.jobDashboardField).toBeVisible()
-    page.reload()
-    if(await client.firstJobElement.isVisible({timeout: 10000})){   
+    await page.waitForLoadState('load')
+    if(await client.firstJobElement.isVisible()){   
         await client.selectFirstJobVisible()
          const editeddescription = await client.editItemsOnJob(description)
          await expect(client.roleFieldonJobDetails).toHaveText("Front-End Developer")
@@ -91,8 +90,9 @@ test('Verify client can edit some items on the edit screen', async({page}) => {
 test('Verify client can delete job ', async({page }) => {
     const client = new ClientPage(page)
     await client.clientLogin()
+    await page.waitForLoadState('load')
     await expect(client.jobDashboardField).toBeVisible()
-    if(await client.firstJobElement.isVisible()){
+    if(await client.firstJobElement.isVisible({timeout: 40000})){
         const selectedJob = await client.selectFirstJobVisible()
         await client.deleteJob()
         await expect(page.getByText(selectedJob)).not.toBeVisible()
