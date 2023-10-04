@@ -1,22 +1,10 @@
 
-
-import dotenv from 'dotenv';
-import path from 'path'
+import { BasePage } from './base-page';
 
 
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
-export class ClientPage{
-    /**
- * @param {import('@playwright/test').Page} page
- */
+export class ClientPage extends BasePage{
    constructor(page){
-    this.page = page 
-    this.emailInputField = page.getByPlaceholder("Email")
-    this.passwordInputField = page.getByPlaceholder("Password")
-    this.loginbuttonField = page.getByRole('button', {name: "Sign in"})
-    this.jobDashboardField = page.getByText('Jobs Dashboard', { exact: true })
-    this.searchDevelopersField = page.getByRole('navigation').getByRole('link', { name: 'Search Developers' })
-    this.hiredDevelopersField = page.getByText('Hired Developer')
+    super(page)
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
@@ -49,35 +37,8 @@ export class ClientPage{
     this.edittedContinentsField = page.locator('div:nth-child(1) > div:nth-child(5) > div:nth-child(5) div:nth-child(2)')
     this.editContinentField = page.locator('.ui:nth-child(3) .delete').first()
    }
-   async gotoRemoteMoreWebsite(){
-     await this.page.goto(process.env.STAGING_URL)
-   }
+ 
 
-   async clientLogin(){
-     await this.gotoRemoteMoreWebsite()
-     await this.emailInputField.fill(process.env.EMAIL)
-     await this.passwordInputField.fill(process.env.PASSWORD)
-     await this.loginbuttonField.click()
-     await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-     await this.searchDevelopersField.isVisible()
-     await this.jobDashboardField.isVisible()
-
-   }
-   async debounceDom(pollDelay = 50, stableDelay = 350) {
-    let markupPrevious = '';
-    const timerStart = new Date();
-    let isStable = false;
-    while (!isStable) {
-        const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
-        if (markupCurrent == markupPrevious) {
-            const elapsed = new Date().getTime() - timerStart.getTime();
-            isStable = stableDelay <= elapsed;
-        } else {
-            markupPrevious = markupCurrent;
-        }
-        if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
-    }
-}
 
    async addJobTitleAndDescription(titleName, description){
     await this.addJobtitleField.fill(titleName)
