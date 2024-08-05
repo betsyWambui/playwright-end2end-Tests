@@ -25,6 +25,7 @@ jobs:
         echo  PASSWORD=${{ secrets.PASSWORD }} >> .env
         echo  STAGING_URL=${{ secrets.STAGING_URL }} >> .env
         echo  JOBS_DASHBOARD_URL=${{ secrets.JOBS_DASHBOARD_URL }} >> .env
+        cat .env
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
