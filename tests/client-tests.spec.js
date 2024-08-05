@@ -3,13 +3,28 @@ import {faker } from '@faker-js/faker';
 import { test, expect} from '@playwright/test';
 import   {  ClientPage } from "../pages/client-page"
 
+// test.describe("MarketPlace Onboarding Client", () => {
 
+//     test("Verify a new client can go through the onboarding process", async({page}) => {
+//         const client = new ClientPage(page)
+//         await client.gotoRemoteMoreWebsite()
+//         await client.clickCompaniesLink()
+//         const companyEmail = faker.internet.email({provider: 'companyEmail.com'})
+//         const firstName = faker.person.firstName()
+//         const lastName = faker.person.lastName()
+//         const companyName = faker.company.name()
+//         const phoneNumber = faker.phone.number('###########')
+//         const password = faker.internet.password()
+//         await client.createLoginInfo(companyEmail, password)
+//         await client.addBasicInfo(firstName, lastName, companyName, phoneNumber)
+//     })
+// })
 test.describe("MarketPlace Client Jobs", () =>   {
     test("verify client can add a new job", async({page}) => {
         const client = new ClientPage(page)
         const titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
-        client.gotoDashboard()
+        client.clientLogin()
          const createdJob = await client.createJob(titleName, description)
         await expect(page.getByText(titleName)).toBeVisible()
         await expect(createdJob.titleName).toEqual(titleName)

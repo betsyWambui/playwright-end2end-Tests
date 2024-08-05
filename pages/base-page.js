@@ -18,7 +18,9 @@ export class BasePage{
     this.hiredDevelopersField = page.getByText('Hired Developer')
    }
 
+
    async gotoRemoteMoreWebsite(){
+   
     await this.page.goto(process.env.STAGING_URL)
   }
   async gotoDashboard() {
@@ -33,7 +35,7 @@ export class BasePage{
         await this.jobDashboardField.isVisible()
         await this.searchDevelopersField.isVisible()
       }
-      async debounceDom(pollDelay = 50, stableDelay = 350) {
+      async debounceDom(pollDelay = 100, stableDelay = 350) {
         let markupPrevious = '';
         const timerStart = new Date();
         let isStable = false;

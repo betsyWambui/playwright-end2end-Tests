@@ -5,6 +5,19 @@ import { BasePage } from './base-page';
 export class ClientPage extends BasePage{
    constructor(page){
     super(page)
+    // MarketPlace Onboarding Page Elements
+    this.companiesLinkTextField = page.getByText('Companies')
+    this.emailAddressField = page.getByPlaceholder("Your email address")
+    this.createPasswordField = page.getByPlaceholder("Create a password")
+    this.repeatPasswordField = page.getByPlaceholder("Repeat password")
+    this.agreeTermsCheckboxField = page.locator(".ui.checkbox")
+    this.signUpFreeButtonField = page.getByRole('button', { name: 'Sign up for free' })
+    this.firstNameInputField = page.getByPlaceholder("e.g. John")
+    this.lastNameInputField = page.getByPlaceholder("e.g. Doe")
+    this.companyNameInputField = page.getByPlaceholder("e.g. RemoteMore")
+    this.phoneNumberInputField = page.locator("#mui-1")
+    this.nextButtonField = page.getByRole('button', { name: 'Next' })
+    // MarketPlace Jobs Page Elements 
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
@@ -38,8 +51,26 @@ export class ClientPage extends BasePage{
     this.editContinentField = page.locator('.ui:nth-child(3) .delete').first()
    }
  
+  async clickCompaniesLink(){
+     await this.companiesLinkTextField.click()
+  }
+  async createLoginInfo(email, password){
+    await this.emailAddressField.fill(email)
+    await this.createPasswordField.fill(password)
+    await this.repeatPasswordField.fill(password)
+    await this.agreeTermsCheckboxField.check()
+    await this.signUpFreeButtonField.click()
+    
+  }
+  async addBasicInfo(firstname, lastname,companyName, phoneNumber){
+    await this.firstNameInputField.fill(firstname)
+    await this.lastNameInputField.fill(lastname)
+    await this.companyNameInputField.fill(companyName)
+    await this.phoneNumberInputField.scrollIntoViewIfNeeded()
+    await this.phoneNumberInputField.fill(phoneNumber)
+    // await this.nextButtonField.click()
 
-
+  }
    async addJobTitleAndDescription(titleName, description){
     await this.addJobtitleField.fill(titleName)
     await this.jobdescriptionField.fill(description)
