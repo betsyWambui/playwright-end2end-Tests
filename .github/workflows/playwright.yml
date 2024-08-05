@@ -19,11 +19,12 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: loading env Variables
-      uses: c-py/action-dotenv-to-setenv@v5
-      id: source-env
-      with:
-       env-file: .env
-    - run: echo ${{ steps.source-env.outputs }}     
+      run: | 
+        touch .env
+        echo  EMAIL=${{ secrets.EMAIL }} >> .env
+        echo  PASSWORD=${{ secrets.PASSWORD }} >> .env
+        echo  STAGING_URL=${{ secrets.STAGING_URL }} >> .env
+        echo  JOBS_DASHBOARD_URL=${{ secrets.JOBS_DASHBOARD_URL }} >> .env
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
