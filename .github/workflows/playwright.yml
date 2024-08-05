@@ -14,19 +14,23 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: loading env Variables
-      run: | 
-        touch .env
-        echo  EMAIL=${{ secrets.EMAIL }} >> .env
-        echo  PASSWORD=${{ secrets.PASSWORD }} >> .env
-        echo  STAGING_URL=${{ secrets.STAGING_URL }} >> .env
-        echo  JOBS_DASHBOARD_URL=${{ secrets.JOBS_DASHBOARD_URL }} >> .env
-        cat .env    
     - name: Install dependencies
       run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-
+    - name: Environment Variables from Dotenv
+      uses: c-py/action-dotenv-to-setenv@v5
+      with:
+       env-file: .env
+    - run: bash tests/dotenv-test.sh 
+    # - name: loading env Variables
+    #   run: | 
+    #     touch .env
+    #     echo  EMAIL=${{ secrets.EMAIL }} >> .env
+    #     echo  PASSWORD=${{ secrets.PASSWORD }} >> .env
+    #     echo  STAGING_URL=${{ secrets.STAGING_URL }} >> .env
+    #     echo  JOBS_DASHBOARD_URL=${{ secrets.JOBS_DASHBOARD_URL }} >> .env
+    #     cat .env    
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
