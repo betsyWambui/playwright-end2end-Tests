@@ -26,7 +26,7 @@ jobs:
         echo  STAGING_URL=${{ secrets.STAGING_URL }} >> .env
         echo  JOBS_DASHBOARD_URL=${{ secrets.JOBS_DASHBOARD_URL }} >> .env
     - name: Run Playwright tests
-      run: npx playwright tests
+      run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: always()
       with:
