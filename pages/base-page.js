@@ -26,29 +26,38 @@ export class BasePage{
   async gotoDashboard() {
     await this.page.goto(process.env.JOBS_DASHBOARD_URL)
   }
-    async clientLogin(){
-        await this.gotoRemoteMoreWebsite()
-        await this.emailInputField.fill(process.env.EMAIL)
-        await this.passwordInputField.fill(process.env.PASSWORD)
-        await this.loginbuttonField.click()
-        await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-        await this.jobDashboardField.isVisible()
-        await this.searchDevelopersField.isVisible()
-      }
-      async debounceDom(pollDelay = 100, stableDelay = 350) {
-        let markupPrevious = '';
-        const timerStart = new Date();
-        let isStable = false;
-        while (!isStable) {
-            const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
-            if (markupCurrent == markupPrevious) {
-                const elapsed = new Date().getTime() - timerStart.getTime();
-                isStable = stableDelay <= elapsed;
-            } else {
-                markupPrevious = markupCurrent;
-            }
-            if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
-        }
+
+  async clientLogin(){
+      await this.gotoRemoteMoreWebsite()
+      await this.emailInputField.fill(process.env.EMAIL)
+      await this.passwordInputField.fill(process.env.PASSWORD)
+      await this.loginbuttonField.click()
+      await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
+      await this.jobDashboardField.isVisible()
+      await this.searchDevelopersField.isVisible()
     }
+  async debounceDom(pollDelay, stableDelay) {
+    let markupPrevious = '';
+    const timerStart = new Date();
+    let isStable = false;
+    while (!isStable) {
+        const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
+        if (markupCurrent == markupPrevious) {
+            const elapsed = new Date().getTime() - timerStart.getTime();
+            isStable = stableDelay <= elapsed;
+        } else {
+            markupPrevious = markupCurrent;
+        }
+        if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
+    }
+}
+// Sign up user either a candidate or company
+async signUpUser(email, password){
+  await this.emailAddressField.fill(email)
+  await this.createPasswordField.fill(password)
+  await this.repeatPasswordField.fill(password)
+  await this.agreeTermsCheckboxField.check()
+  await this.signUpFreeButtonField.click()
+}
    
 }

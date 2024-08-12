@@ -12,4 +12,13 @@ test.describe("Search Developers", () =>   {
         await expect(searchCandidates.noOfcandidateText).toBeVisible() 
     });
 
+    test("verify after bookmarking user profile was successful", async({page}) => {
+        const searchCandidates = new SearchCandidatesPage(page)
+        await searchCandidates.clientLogin()
+        await searchCandidates.clickSearchDevelopersOption()
+        await searchCandidates.debounceDom(50,400)
+        await searchCandidates.addSkillFilteronSearchFilters()
+
+    })
+
 })

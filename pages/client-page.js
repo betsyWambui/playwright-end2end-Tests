@@ -17,7 +17,15 @@ export class ClientPage extends BasePage{
     this.companyNameInputField = page.getByPlaceholder("e.g. RemoteMore")
     this.phoneNumberInputField = page.locator("#mui-1")
     this.nextButtonField = page.getByRole('button', { name: 'Next' })
-    // MarketPlace Jobs Page Elements 
+    this.fullStackRadioButtonField = page.getByText('Full-Stack Developer')
+    this.technicalSkillsInputField = page.locator('#mui-3')
+    this.technicalAddTextLink =page.getByText('Add +')
+    this.yearsOfexperienceRadioButton = page.getByText('3-4 years (Intermediate)')
+    this.hoursPerWeekRadioButton = page.getByText('0-9 hours/week')
+    this.maximumBudgetRadioButon = page.getByText('Up to 2,000 EUR (usually Africa, Middle East)')
+    this.imageOnanimatedScreen = page.locator('.ai > image')
+    // MarketPlace Job Dashboard Elements
+    this.JobsNaviagationField = page.getByRole('navigation').getByRole('link', { name: 'Jobs Dashboard'})
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
@@ -54,23 +62,57 @@ export class ClientPage extends BasePage{
   async clickCompaniesLink(){
      await this.companiesLinkTextField.click()
   }
-  async createLoginInfo(email, password){
-    await this.emailAddressField.fill(email)
-    await this.createPasswordField.fill(password)
-    await this.repeatPasswordField.fill(password)
-    await this.agreeTermsCheckboxField.check()
-    await this.signUpFreeButtonField.click()
-    
-  }
+ 
   async addBasicInfo(firstname, lastname,companyName, phoneNumber){
     await this.firstNameInputField.fill(firstname)
     await this.lastNameInputField.fill(lastname)
     await this.companyNameInputField.fill(companyName)
     await this.phoneNumberInputField.scrollIntoViewIfNeeded()
+    await this.phoneNumberInputField.click()
+    // await this.phoneNumberInputField.fill(phoneNumber)
     await this.phoneNumberInputField.fill(phoneNumber)
-    // await this.nextButtonField.click()
+    await this.nextButtonField.scrollIntoViewIfNeeded()
+    await this.nextButtonField.click()
+    await this.fullStackRadioButtonField.click()
+    await this.nextButtonField.click()
 
   }
+  async selectTechncialSkills(){
+    await this.technicalSkillsInputField.fill('React')
+    await this.technicalAddTextLink.click()
+    await this.technicalSkillsInputField.fill('React Native')
+    await this.technicalAddTextLink.click()
+    await this.technicalSkillsInputField.fill('Javascript')
+    await this.technicalAddTextLink.click()
+    await this.nextButtonField.click()
+  }
+  async selectYearsOfExperience(){
+    await this.yearsOfexperienceRadioButton.click()
+    await this.nextButtonField.click()
+  }
+  async selectHoursPerWeek(){
+    await this.hoursPerWeekRadioButton.click()
+    await this.nextButtonField.click()
+  }
+
+  async selectMaximumBudget(){
+    await this.maximumBudgetRadioButon.click(
+    await this.nextButtonField.click()
+    )
+  }
+  async waitForAnimationEnd() {
+    return await this
+      .imageOnanimatedScreen
+      .evaluate((element) =>
+        Promise.all(
+          element
+            .getAnimations()
+            .map((animation) => animation.finished)
+        )
+      )
+  }
+  
+  // MarketPlace Job dashboard Actions
    async addJobTitleAndDescription(titleName, description){
     await this.addJobtitleField.fill(titleName)
     await this.jobdescriptionField.fill(description)

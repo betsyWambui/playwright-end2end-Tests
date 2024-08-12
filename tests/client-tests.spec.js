@@ -1,24 +1,39 @@
 // @ts-check
 import {faker } from '@faker-js/faker';
+import dotenv from 'dotenv';
+import path from 'path'
 import { test, expect} from '@playwright/test';
 import   {  ClientPage } from "../pages/client-page"
 
-// test.describe("MarketPlace Onboarding Client", () => {
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-//     test("Verify a new client can go through the onboarding process", async({page}) => {
-//         const client = new ClientPage(page)
-//         await client.gotoRemoteMoreWebsite()
-//         await client.clickCompaniesLink()
-//         const companyEmail = faker.internet.email({provider: 'companyEmail.com'})
-//         const firstName = faker.person.firstName()
-//         const lastName = faker.person.lastName()
-//         const companyName = faker.company.name()
-//         const phoneNumber = faker.phone.number('###########')
-//         const password = faker.internet.password()
-//         await client.createLoginInfo(companyEmail, password)
-//         await client.addBasicInfo(firstName, lastName, companyName, phoneNumber)
-//     })
-// })
+test.describe("MarketPlace Onboarding Client", () => {
+
+    test("Verify a new client can go through the onboarding process", async({page}) => {
+        const client = new ClientPage(page)
+        await client.gotoRemoteMoreWebsite()
+        await client.clickCompaniesLink()
+        const companyEmail = faker.internet.email({provider: 'companyEmail.com'})
+        const firstName = faker.person.firstName()
+        const lastName = faker.person.lastName()
+        const companyName = faker.company.name()
+        const phoneNumber = faker.phone.number().replace('/-/g', '')
+        const password = faker.internet.password()
+        await client.signUpUser(companyEmail, password)
+        await client.addBasicInfo(firstName, lastName, companyName, phoneNumber)
+        await client.selectTechncialSkills()
+        await client.selectYearsOfExperience()
+        await client.selectHoursPerWeek()
+        await client.selectMaximumBudget()
+        await client.debounceDom(100,350)
+
+        const jobDashboardPage = await page.url()
+        await expect(client.JobsNaviagationField).toBeVisible()
+        await expect(jobDashboardPage).toEqual(process.env.JOBS_DASHBOARD_URL)
+    })
+// locator('g:nth-child(13) > g > image')
+
+})
 test.describe("MarketPlace Client Jobs", () =>   {
     test("verify client can add a new job", async({page}) => {
         const client = new ClientPage(page)
