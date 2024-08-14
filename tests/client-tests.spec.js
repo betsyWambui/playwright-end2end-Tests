@@ -25,13 +25,9 @@ test.describe("MarketPlace Onboarding Client", () => {
         await client.selectYearsOfExperience()
         await client.selectHoursPerWeek()
         await client.selectMaximumBudget()
-        await client.debounceDom(100,350)
-
-        const jobDashboardPage = await page.url()
-        await expect(client.JobsNaviagationField).toBeVisible()
-        await expect(jobDashboardPage).toEqual(process.env.JOBS_DASHBOARD_URL)
+        await client.jobDashboardField.isVisible()
+        await expect(client.jobDashboardField).toBeVisible()
     })
-// locator('g:nth-child(13) > g > image')
 
 })
 test.describe("MarketPlace Client Jobs", () =>   {

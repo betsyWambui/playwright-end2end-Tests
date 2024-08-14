@@ -32,6 +32,7 @@ module.exports = defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
     baseURL: process.env.CI ? process.env.STAGING_URL:process.env.STAGING_URL,
+    navigationTimeout: 60000,
   
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

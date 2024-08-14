@@ -25,7 +25,7 @@ export class ClientPage extends BasePage{
     this.maximumBudgetRadioButon = page.getByText('Up to 2,000 EUR (usually Africa, Middle East)')
     this.imageOnanimatedScreen = page.locator('.ai > image')
     // MarketPlace Job Dashboard Elements
-    this.JobsNaviagationField = page.getByRole('navigation').getByRole('link', { name: 'Jobs Dashboard'})
+    // this.JobsNaviagationField = page.getByRole('navigation').getByRole('link', { name: 'Jobs Dashboard'})
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
