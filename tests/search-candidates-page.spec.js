@@ -8,7 +8,6 @@ test.describe("Search Developers", () =>   {
         const searchCandidates = new SearchCandidatesPage(page)
         await searchCandidates.clientLogin()
         await searchCandidates.clickSearchDevelopersOption()
-        await searchCandidates.debounceDom(30, 350)
         await searchCandidates.listofSavedProfiles()
         await expect(searchCandidates.noOfcandidateText).toBeVisible() 
     });

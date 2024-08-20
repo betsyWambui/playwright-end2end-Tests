@@ -25,7 +25,7 @@ test.describe("MarketPlace Onboarding Client", () => {
         await client.selectYearsOfExperience()
         await client.selectHoursPerWeek()
         await client.selectMaximumBudget()
-        await client.jobDashboardField.isVisible()
+        await page.waitForURL('https://rm-marketplace-develop.web.app/jobs')
         await expect(client.jobDashboardField).toBeVisible()
     })
 
@@ -56,14 +56,12 @@ test.describe("MarketPlace Client Jobs", () =>   {
         titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
         await client.clientLogin()
-        await expect(client.jobDashboardField).toBeVisible()
-        await client.debounceDom(50, 350)
+        await client.addJobLinkText.first().click()
         if(await client.firstJobElement.isVisible()){
             await client.selectFirstJobVisible()
             const newJobTitle = await client.renameJobTitle(titleName)
             await expect(page.getByText(newJobTitle)).toBeVisible()
             await expect(page.getByText(newJobTitle)).toHaveText(newJobTitle)
-            // await expect( client.addJobtitleField).toEqual(page.getByText(newJobTitle))
             
         }
         else{
@@ -83,7 +81,6 @@ test.describe("MarketPlace Client Jobs", () =>   {
         const client = new ClientPage(page)   
         description = faker.lorem.text() 
         await client.clientLogin()
-        await client.debounceDom(50, 350)
         if(await client.firstJobElement.isVisible()){   
             await client.selectFirstJobVisible()
              const editeddescription = await client.editItemsOnJob(description)
@@ -110,8 +107,7 @@ test.describe("MarketPlace Client Jobs", () =>   {
     test('Verify client can delete job ', async({page }) => {
         const client = new ClientPage(page)
         await client.clientLogin()
-        await expect(client.jobDashboardField).toBeVisible()
-        await client.debounceDom(50, 350)
+        await client.addJobLinkText.first().click()
         if(await client.firstJobElement.isVisible()){
             const selectedJob = await client.selectFirstJobVisible()
             await client.deleteJob()
