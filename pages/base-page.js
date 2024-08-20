@@ -26,16 +26,6 @@ export class BasePage{
   async gotoDashboard() {
     await this.page.goto(process.env.JOBS_DASHBOARD_URL)
   }
-
-  async clientLogin(){
-      await this.gotoRemoteMoreWebsite()
-      await this.emailInputField.fill(process.env.EMAIL)
-      await this.passwordInputField.fill(process.env.PASSWORD)
-      await this.loginbuttonField.click()
-      await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-      await this.jobDashboardField.isVisible()
-      await this.searchDevelopersField.isVisible()
-    }
   async debounceDom(pollDelay, stableDelay) {
     let markupPrevious = '';
     const timerStart = new Date();
@@ -51,6 +41,17 @@ export class BasePage{
         if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
     }
 }
+  async clientLogin(){
+      await this.gotoRemoteMoreWebsite()
+      await this.emailInputField.fill(process.env.EMAIL)
+      await this.passwordInputField.fill(process.env.PASSWORD)
+      await this.loginbuttonField.click()
+      await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
+      await this.debounceDom(150, 450)
+      await this.jobDashboardField.isVisible()
+      await this.searchDevelopersField.isVisible()
+    }
+  
 // Sign up user either a candidate or company
 async signUpUser(email, password){
   await this.emailAddressField.fill(email)

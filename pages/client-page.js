@@ -32,8 +32,8 @@ export class ClientPage extends BasePage{
     this.jobdescriptionField = page.getByPlaceholder('Job description')
     this.skillInputField = page.getByPlaceholder('Type in required skills')
     this.selectReactField = page.getByText('React', { exact: true })
-    this.selectPythonField = page.getByText('Python', {exact: true })
-    this.selectJavaField = page.getByText('Java', {exact: true})
+    this.selectPythonField = page.getByText('React Native', {exact: true })
+    this.selectJavaField = page.getByText('JavaScript', {exact: true})
     this.checkFirstRoleField = page.getByLabel('Full-Stack Developer')
     this.checkSecondRoleField =  page.getByLabel('Front-End Developer')
     this.senioritySliderTrackField = page.locator('.MuiSlider-root:nth-child(2) > span:nth-child(2)').first()
@@ -46,7 +46,7 @@ export class ClientPage extends BasePage{
     this.continentDropdownIconField = page.locator('i.dropdown').first()
     this.countriesDropdownIconField = page.locator('i.dropdown').last()
     this.saveJobField = page.getByRole('button', {name: 'Save job'})
-    this.firstJobElement = page.locator('div.job-name-container').first()
+    this.firstJobElement = page.locator('(//div[@class="job-name-container MuiBox-root css-doxjmx"])[1]')
     this.createdTextField = page.locator("div").filter({hasText: 'Created'})
     this.jobMenubutton = page.locator('#long-button').first()
     this.deleteJobOptionField = page.getByText('Delete job').first()
@@ -69,7 +69,6 @@ export class ClientPage extends BasePage{
     await this.companyNameInputField.fill(companyName)
     await this.phoneNumberInputField.scrollIntoViewIfNeeded()
     await this.phoneNumberInputField.click()
-    // await this.phoneNumberInputField.fill(phoneNumber)
     await this.phoneNumberInputField.fill(phoneNumber)
     await this.nextButtonField.scrollIntoViewIfNeeded()
     await this.nextButtonField.click()
@@ -82,7 +81,7 @@ export class ClientPage extends BasePage{
     await this.technicalAddTextLink.click()
     await this.technicalSkillsInputField.fill('React Native')
     await this.technicalAddTextLink.click()
-    await this.technicalSkillsInputField.fill('Javascript')
+    await this.technicalSkillsInputField.fill('JavaScript')
     await this.technicalAddTextLink.click()
     await this.nextButtonField.click()
   }
@@ -121,9 +120,9 @@ export class ClientPage extends BasePage{
    async addSkills(){
     await this.skillInputField.fill("React")
     await this.selectReactField.click()
-    await this.skillInputField.fill("Python")
+    await this.skillInputField.fill("React Native")
     await this.selectPythonField.click()
-    await this.skillInputField.fill("Java")
+    await this.skillInputField.fill("Javascript")
     await this.selectJavaField.click()
    }
    async selectRole(checkRadioField){
@@ -179,9 +178,8 @@ export class ClientPage extends BasePage{
       return { titleName, description }
   }
   async selectFirstJobVisible() {
-
-    await this.firstJobElement.click()
     const selectedJob = await this.firstJobElement.innerText()
+    await this.firstJobElement.click()
     return selectedJob
   }
   async selectCreatedJob(jobTitle) {
