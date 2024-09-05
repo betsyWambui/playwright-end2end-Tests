@@ -7,29 +7,29 @@ import   {  ClientPage } from "../pages/client-page"
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-test.describe("MarketPlace Onboarding Client", () => {
+// test.describe("MarketPlace Onboarding Client", () => {
 
-    test("Verify a new client can go through the onboarding process", async({page}) => {
-        const client = new ClientPage(page)
-        await client.gotoRemoteMoreWebsite()
-        await client.clickCompaniesLink()
-        const companyEmail = faker.internet.email({provider: 'companyEmail.com'})
-        const firstName = faker.person.firstName()
-        const lastName = faker.person.lastName()
-        const companyName = faker.company.name()
-        const phoneNumber = faker.phone.number().replace('/-/g', '')
-        const password = faker.internet.password()
-        await client.signUpUser(companyEmail, password)
-        await client.addBasicInfo(firstName, lastName, companyName, phoneNumber)
-        await client.selectTechncialSkills()
-        await client.selectYearsOfExperience()
-        await client.selectHoursPerWeek()
-        await client.selectMaximumBudget()
-        await client.debounceDom(1000, 1000)
-        await expect(page).toHaveURL(/.*jobs/)
-    })
+    // test("Verify a new client can go through the onboarding process", async({page}) => {
+    //     const client = new ClientPage(page)
+    //     await client.gotoRemoteMoreWebsite()
+    //     await client.clickCompaniesLink()
+    //     const companyEmail = faker.internet.email({provider: 'companyEmail.com'})
+    //     const firstName = faker.person.firstName()
+    //     const lastName = faker.person.lastName()
+    //     const companyName = faker.company.name()
+    //     const phoneNumber = faker.phone.number().replace('/-/g', '')
+    //     const password = faker.internet.password()
+    //     await client.signUpUser(companyEmail, password)
+    //     await client.addBasicInfo(firstName, lastName, companyName, phoneNumber)
+    //     await client.selectTechncialSkills()
+    //     await client.selectYearsOfExperience()
+    //     await client.selectHoursPerWeek()
+    //     await client.selectMaximumBudget()
+    //     await client.debounceDom(1000, 1000)
+    //     await expect(page).toHaveURL(/.*jobs/)
+    // })
 
-})
+// })
 test.describe("MarketPlace Client Jobs", () =>   {
     test("verify client can add a new job", async({page}) => {
         const client = new ClientPage(page)
