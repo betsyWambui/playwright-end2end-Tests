@@ -31,22 +31,24 @@ dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 // })
 test.describe("MarketPlace Client Jobs", () =>   {
+     let client;
+    test.beforeEach( async({page})=>{
+       client = new ClientPage(page)
+       await  client.clientLogin()
+    })
     test("verify client can add a new job", async({page}) => {
-        const client = new ClientPage(page)
+   
         const titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
-        client.clientLogin()
          const createdJob = await client.createJob(titleName, description)
         await expect(page.getByText(titleName)).toBeVisible()
-        await expect(createdJob.titleName).toEqual(titleName)
+        expect(createdJob.titleName).toEqual(titleName)
     })
     
     test("verify client can rename a job title", async({page}) => {
         let titleName;
-        const client = new ClientPage(page)    
         titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
-        await client.clientLogin()
         await client.addJobLinkText.first().click()
         if(await client.firstJobElement.isVisible()){
             await client.selectFirstJobVisible()
@@ -68,16 +70,14 @@ test.describe("MarketPlace Client Jobs", () =>   {
     })
    
     test('Verify client can edit some items on the edit screen', async({page}) => {
-       let description;
-        const client = new ClientPage(page)   
-        description = faker.lorem.text() 
-        await client.clientLogin()
+       let description;  
+        description = faker.lorem.text()
         if(await client.firstJobElement.isVisible()){   
             await client.selectFirstJobVisible()
              const editeddescription = await client.editItemsOnJob(description)
              await expect(client.roleFieldonJobDetails).toHaveText("Front-End Developer")
              await expect(client.edittedContinentsField).toHaveText("Africa, Asia")
-             await expect(editeddescription).toEqual(description)
+             expect(editeddescription).toEqual(description)
     
             }
         else{
@@ -89,23 +89,19 @@ test.describe("MarketPlace Client Jobs", () =>   {
             await client.editItemsOnJob(edittedDescriptionText)
             await expect(client.roleFieldonJobDetails).toHaveText("Front-End Developer")
             await expect(client.edittedContinentsField).toHaveText("Africa, Asia")
-            await expect(edittedDescriptionText).not.toEqual(createdJob.description)
+            expect(edittedDescriptionText).not.toEqual(createdJob.description)
     
         }     
     
     })
     test('Verify client can delete an incomplete job creation', async({page}) => {
-        const client = new ClientPage(page)
         const titleName = faker.person.jobTitle()
         const description = faker.lorem.text()
-         await client.clientLogin()
          await client.deleteIncompleteJobCreate(titleName, description)
          await expect(page.getByText(titleName)).not.toBeVisible()
     })
     
     test('Verify client can delete job ', async({page }) => {
-        const client = new ClientPage(page)
-        await client.clientLogin()
         if(await client.firstJobElement.isVisible()){
             const selectedJob = await client.selectFirstJobVisible()
             await client.deleteJob()

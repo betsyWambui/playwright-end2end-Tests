@@ -198,7 +198,6 @@ export class ClientPage extends BasePage{
 
  async editItemsOnJob(description){
    await this.editbuttonField.click()
-   await this.page.setDefaultTimeout(50000)
    await this.selectRole(this.checkSecondRoleField)
    await this.jobdescriptionField.fill(description)
    await this.editContinentField.click()

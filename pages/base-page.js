@@ -55,7 +55,7 @@ export class BasePage{
       await this.passwordInputField.fill(process.env.PASSWORD)
       await this.loginbuttonField.click()
       await this.waitForJobsScreenDisplay()
-      await this.debounceDom(150, 600)  
+      await this.debounceDom(300, 900)  
       await this.jobDashboardField.isVisible()
       await this.searchDevelopersField.isVisible()
     }
