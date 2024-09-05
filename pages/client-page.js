@@ -95,21 +95,21 @@ export class ClientPage extends BasePage{
   }
 
   async selectMaximumBudget(){
-    await this.maximumBudgetRadioButon.click(
+    await this.maximumBudgetRadioButon.click()
     await this.nextButtonField.click()
-    )
+    
   }
-  async waitForAnimationEnd() {
-    return await this
-      .imageOnanimatedScreen
-      .evaluate((element) =>
-        Promise.all(
-          element
-            .getAnimations()
-            .map((animation) => animation.finished)
-        )
-      )
-  }
+  // async waitForAnimationEnd() {
+  //   return await this
+  //     .imageOnanimatedScreen
+  //     .evaluate((element) =>
+  //       Promise.all(
+  //         element
+  //           .getAnimations()
+  //           .map((animation) => animation.finished)
+  //       )
+  //     )
+  // }
   
   // MarketPlace Job dashboard Actions
    async addJobTitleAndDescription(titleName, description){
@@ -178,8 +178,8 @@ export class ClientPage extends BasePage{
       return { titleName, description }
   }
   async selectFirstJobVisible() {
-    const selectedJob = await this.firstJobElement.innerText()
     await this.firstJobElement.click()
+    const selectedJob = await this.firstJobElement.innerText()
     return selectedJob
   }
   async selectCreatedJob(jobTitle) {

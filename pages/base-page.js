@@ -27,27 +27,35 @@ export class BasePage{
     await this.page.goto(process.env.JOBS_DASHBOARD_URL)
   }
   async debounceDom(pollDelay, stableDelay) {
-    let markupPrevious = '';
-    const timerStart = new Date();
-    let isStable = false;
-    while (!isStable) {
-        const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
-        if (markupCurrent == markupPrevious) {
-            const elapsed = new Date().getTime() - timerStart.getTime();
-            isStable = stableDelay <= elapsed;
-        } else {
-            markupPrevious = markupCurrent;
-        }
-        if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
-    }
-}
+      let markupPrevious = '';
+      const timerStart = new Date();
+      let isStable = false;
+      while (!isStable) {
+          const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
+          if (markupCurrent == markupPrevious) {
+              const elapsed = new Date().getTime() - timerStart.getTime();
+              isStable = stableDelay <= elapsed;
+          } else {
+              markupPrevious = markupCurrent;
+          }
+          if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
+      }
+  }
+    async waitForJobsScreenDisplay(){
+    await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
+  
+  }
+  async waitForSearchScreenDisplay(){
+    await this.page.waitForURL(process.env.SEARCH_DEVELOPERS_URL)
+    await this.waitForJobsScreenDisplay()
+  }
   async clientLogin(){
       await this.gotoRemoteMoreWebsite()
       await this.emailInputField.fill(process.env.EMAIL)
       await this.passwordInputField.fill(process.env.PASSWORD)
       await this.loginbuttonField.click()
-      await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-      await this.debounceDom(150, 450)
+      await this.waitForJobsScreenDisplay()
+      await this.debounceDom(150, 600)  
       await this.jobDashboardField.isVisible()
       await this.searchDevelopersField.isVisible()
     }

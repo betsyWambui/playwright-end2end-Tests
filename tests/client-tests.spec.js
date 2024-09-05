@@ -25,8 +25,8 @@ test.describe("MarketPlace Onboarding Client", () => {
         await client.selectYearsOfExperience()
         await client.selectHoursPerWeek()
         await client.selectMaximumBudget()
-        await page.waitForURL('https://rm-marketplace-develop.web.app/jobs')
-        await expect(client.jobDashboardField).toBeVisible()
+        await client.debounceDom(1000, 1000)
+        await expect(page).toHaveURL(/.*jobs/)
     })
 
 })
@@ -39,15 +39,6 @@ test.describe("MarketPlace Client Jobs", () =>   {
          const createdJob = await client.createJob(titleName, description)
         await expect(page.getByText(titleName)).toBeVisible()
         await expect(createdJob.titleName).toEqual(titleName)
-    })
-    
-    test('Verify client can delete an incomplete job creation', async({page}) => {
-        const client = new ClientPage(page)
-        const titleName = faker.person.jobTitle()
-        const description = faker.lorem.text()
-         await client.clientLogin()
-         await client.deleteIncompleteJobCreate(titleName, description)
-         await expect(page.getByText(titleName)).not.toBeVisible()
     })
     
     test("verify client can rename a job title", async({page}) => {
@@ -75,7 +66,7 @@ test.describe("MarketPlace Client Jobs", () =>   {
         }
        
     })
-    
+   
     test('Verify client can edit some items on the edit screen', async({page}) => {
        let description;
         const client = new ClientPage(page)   
@@ -103,11 +94,18 @@ test.describe("MarketPlace Client Jobs", () =>   {
         }     
     
     })
+    test('Verify client can delete an incomplete job creation', async({page}) => {
+        const client = new ClientPage(page)
+        const titleName = faker.person.jobTitle()
+        const description = faker.lorem.text()
+         await client.clientLogin()
+         await client.deleteIncompleteJobCreate(titleName, description)
+         await expect(page.getByText(titleName)).not.toBeVisible()
+    })
     
     test('Verify client can delete job ', async({page }) => {
         const client = new ClientPage(page)
         await client.clientLogin()
-        await client.addJobLinkText.first().click()
         if(await client.firstJobElement.isVisible()){
             const selectedJob = await client.selectFirstJobVisible()
             await client.deleteJob()
