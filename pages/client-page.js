@@ -1,30 +1,39 @@
 
-
-import dotenv from 'dotenv';
-import path from 'path'
+import { BasePage } from './base-page';
 
 
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
-export class ClientPage{
-    /**
- * @param {import('@playwright/test').Page} page
- */
+export class ClientPage extends BasePage{
    constructor(page){
-    this.page = page 
-    this.emailInputField = page.getByPlaceholder("Email")
-    this.passwordInputField = page.getByPlaceholder("Password")
-    this.loginbuttonField = page.getByRole('button', {name: "Sign in"})
-    this.jobDashboardField = page.getByText('Jobs Dashboard', { exact: true })
-    this.searchDevelopersField = page.getByRole('navigation').getByRole('link', { name: 'Search Developers' })
-    this.hiredDevelopersField = page.getByText('Hired Developer')
+    super(page)
+    // MarketPlace Onboarding Page Elements
+    this.companiesLinkTextField = page.getByText('Companies')
+    this.emailAddressField = page.getByPlaceholder("Your email address")
+    this.createPasswordField = page.getByPlaceholder("Create a password")
+    this.repeatPasswordField = page.getByPlaceholder("Repeat password")
+    this.agreeTermsCheckboxField = page.locator(".ui.checkbox")
+    this.signUpFreeButtonField = page.getByRole('button', { name: 'Sign up for free' })
+    this.firstNameInputField = page.getByPlaceholder("e.g. John")
+    this.lastNameInputField = page.getByPlaceholder("e.g. Doe")
+    this.companyNameInputField = page.getByPlaceholder("e.g. RemoteMore")
+    this.phoneNumberInputField = page.locator("#mui-1")
+    this.nextButtonField = page.getByRole('button', { name: 'Next' })
+    this.fullStackRadioButtonField = page.getByText('Full-Stack Developer')
+    this.technicalSkillsInputField = page.locator('#mui-3')
+    this.technicalAddTextLink =page.getByText('Add +')
+    this.yearsOfexperienceRadioButton = page.getByText('3-4 years (Intermediate)')
+    this.hoursPerWeekRadioButton = page.getByText('0-9 hours/week')
+    this.maximumBudgetRadioButon = page.getByText('Up to 2,000 EUR (usually Africa, Middle East)')
+    this.imageOnanimatedScreen = page.locator('.ai > image')
+    // MarketPlace Job Dashboard Elements
+    // this.JobsNaviagationField = page.getByRole('navigation').getByRole('link', { name: 'Jobs Dashboard'})
     this.addJobLinkText = page.getByRole('button', { name: 'Add new job' })
     this.addJobtitleField =  page.getByPlaceholder('Job title')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
     this.jobdescriptionField = page.getByPlaceholder('Job description')
     this.skillInputField = page.getByPlaceholder('Type in required skills')
     this.selectReactField = page.getByText('React', { exact: true })
-    this.selectPythonField = page.getByText('Python', {exact: true })
-    this.selectJavaField = page.getByText('Java', {exact: true})
+    this.selectPythonField = page.getByText('React Native', {exact: true })
+    this.selectJavaField = page.getByText('JavaScript', {exact: true})
     this.checkFirstRoleField = page.getByLabel('Full-Stack Developer')
     this.checkSecondRoleField =  page.getByLabel('Front-End Developer')
     this.senioritySliderTrackField = page.locator('.MuiSlider-root:nth-child(2) > span:nth-child(2)').first()
@@ -37,7 +46,7 @@ export class ClientPage{
     this.continentDropdownIconField = page.locator('i.dropdown').first()
     this.countriesDropdownIconField = page.locator('i.dropdown').last()
     this.saveJobField = page.getByRole('button', {name: 'Save job'})
-    this.firstJobElement = page.locator('div.job-name-container').first()
+    this.firstJobElement = page.locator('(//div[@class="job-name-container MuiBox-root css-doxjmx"])[1]')
     this.createdTextField = page.locator("div").filter({hasText: 'Created'})
     this.jobMenubutton = page.locator('#long-button').first()
     this.deleteJobOptionField = page.getByText('Delete job').first()
@@ -49,36 +58,60 @@ export class ClientPage{
     this.edittedContinentsField = page.locator('div:nth-child(1) > div:nth-child(5) > div:nth-child(5) div:nth-child(2)')
     this.editContinentField = page.locator('.ui:nth-child(3) .delete').first()
    }
-   async gotoRemoteMoreWebsite(){
-     await this.page.goto(process.env.STAGING_URL)
-   }
+ 
+  async clickCompaniesLink(){
+     await this.companiesLinkTextField.click()
+  }
+ 
+  async addBasicInfo(firstname, lastname,companyName, phoneNumber){
+    await this.firstNameInputField.fill(firstname)
+    await this.lastNameInputField.fill(lastname)
+    await this.companyNameInputField.fill(companyName)
+    await this.phoneNumberInputField.scrollIntoViewIfNeeded()
+    await this.phoneNumberInputField.click()
+    await this.phoneNumberInputField.fill(phoneNumber)
+    await this.nextButtonField.scrollIntoViewIfNeeded()
+    await this.nextButtonField.click()
+    await this.fullStackRadioButtonField.click()
+    await this.nextButtonField.click()
 
-   async clientLogin(){
-     await this.gotoRemoteMoreWebsite()
-     await this.emailInputField.fill(process.env.EMAIL)
-     await this.passwordInputField.fill(process.env.PASSWORD)
-     await this.loginbuttonField.click()
-     await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
-     await this.searchDevelopersField.isVisible()
-     await this.jobDashboardField.isVisible()
+  }
+  async selectTechncialSkills(){
+    await this.technicalSkillsInputField.fill('React')
+    await this.technicalAddTextLink.click()
+    await this.technicalSkillsInputField.fill('React Native')
+    await this.technicalAddTextLink.click()
+    await this.technicalSkillsInputField.fill('JavaScript')
+    await this.technicalAddTextLink.click()
+    await this.nextButtonField.click()
+  }
+  async selectYearsOfExperience(){
+    await this.yearsOfexperienceRadioButton.click()
+    await this.nextButtonField.click()
+  }
+  async selectHoursPerWeek(){
+    await this.hoursPerWeekRadioButton.click()
+    await this.nextButtonField.click()
+  }
 
-   }
-   async debounceDom(pollDelay = 50, stableDelay = 350) {
-    let markupPrevious = '';
-    const timerStart = new Date();
-    let isStable = false;
-    while (!isStable) {
-        const markupCurrent = await this.page.evaluate(() => document.body.innerHTML);
-        if (markupCurrent == markupPrevious) {
-            const elapsed = new Date().getTime() - timerStart.getTime();
-            isStable = stableDelay <= elapsed;
-        } else {
-            markupPrevious = markupCurrent;
-        }
-        if (!isStable) await new Promise(resolve => setTimeout(resolve, pollDelay));
-    }
-}
-
+  async selectMaximumBudget(){
+    await this.maximumBudgetRadioButon.click()
+    await this.nextButtonField.click()
+    
+  }
+  // async waitForAnimationEnd() {
+  //   return await this
+  //     .imageOnanimatedScreen
+  //     .evaluate((element) =>
+  //       Promise.all(
+  //         element
+  //           .getAnimations()
+  //           .map((animation) => animation.finished)
+  //       )
+  //     )
+  // }
+  
+  // MarketPlace Job dashboard Actions
    async addJobTitleAndDescription(titleName, description){
     await this.addJobtitleField.fill(titleName)
     await this.jobdescriptionField.fill(description)
@@ -87,9 +120,9 @@ export class ClientPage{
    async addSkills(){
     await this.skillInputField.fill("React")
     await this.selectReactField.click()
-    await this.skillInputField.fill("Python")
+    await this.skillInputField.fill("React Native")
     await this.selectPythonField.click()
-    await this.skillInputField.fill("Java")
+    await this.skillInputField.fill("Javascript")
     await this.selectJavaField.click()
    }
    async selectRole(checkRadioField){
@@ -145,7 +178,6 @@ export class ClientPage{
       return { titleName, description }
   }
   async selectFirstJobVisible() {
-
     await this.firstJobElement.click()
     const selectedJob = await this.firstJobElement.innerText()
     return selectedJob
@@ -166,7 +198,6 @@ export class ClientPage{
 
  async editItemsOnJob(description){
    await this.editbuttonField.click()
-   await this.page.setDefaultTimeout(50000)
    await this.selectRole(this.checkSecondRoleField)
    await this.jobdescriptionField.fill(description)
    await this.editContinentField.click()
