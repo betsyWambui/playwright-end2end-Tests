@@ -43,21 +43,19 @@ export class BasePage{
   }
     async waitForJobsScreenDisplay(){
     await this.page.waitForURL(process.env.JOBS_DASHBOARD_URL)
+    await this.jobDashboardField.isVisible()
+    await this.searchDevelopersField.isVisible()
   
   }
   async waitForSearchScreenDisplay(){
     await this.page.waitForURL(process.env.SEARCH_DEVELOPERS_URL)
-    await this.waitForJobsScreenDisplay()
   }
-  async clientLogin(){
+  async loginUser(email, password){
       await this.gotoRemoteMoreWebsite()
-      await this.emailInputField.fill(process.env.EMAIL)
-      await this.passwordInputField.fill(process.env.PASSWORD)
+      await this.emailInputField.fill(email)
+      await this.passwordInputField.fill(password)
       await this.loginbuttonField.click()
-      await this.waitForJobsScreenDisplay()
-      await this.debounceDom(300, 900)  
-      await this.jobDashboardField.isVisible()
-      await this.searchDevelopersField.isVisible()
+      await this.debounceDom(900,10000)  
     }
   
 // Sign up user either a candidate or company
